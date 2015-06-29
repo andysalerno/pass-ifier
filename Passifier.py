@@ -17,9 +17,6 @@ def gen_password(numbers_taken, factors=None):
         site_name = input('Site name (case insensitive): ').lower()
 
         number = input('number to recalc a password, or enter to calc new one: ')
-        if not number and len(numbers_taken) == RAND_RANGE:
-            print('used all ' + str(RAND_RANGE) + ' passwords!')
-            quit()
 
     number = int(number) if number else roll_new_number(numbers_taken)
     numbers_taken.add(number)
