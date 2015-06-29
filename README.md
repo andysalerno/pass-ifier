@@ -2,30 +2,30 @@
 Python tool for generating strong, yet still humanly memorable, passwords that can be deterministically regenerated at any time.
 
 # Example:  
-$ python3 Passifier.py  
-Master password:  
-Site name (case insensitive): facebook  
-number to recalc a password, or enter to calc new one:  
-Your password: NovelsSunwardsPeacefulness:93  
-happy? (if no, will reroll) y/n: n  
-Your password: ScalpingAquiferGimmickry:37  
-happy? (if no, will reroll) y/n: n  
-Your password: CamembertSplashersColonials:71  
-happy? (if no, will reroll) y/n: n  
-Your password: PerusalGrimyGenteelest:96  
-happy? (if no, will reroll) y/n: n  
-Your password: UnfeltDestructivenessAnodizing:50  
-happy? (if no, will reroll) y/n: n  
-Your password: HelicoptsCrapedReiterated:5  
-happy? (if no, will reroll) y/n: n  
-Your password: AdulterousTrottingVotable:66  
-happy? (if no, will reroll) y/n: n  
-Your password: PreacceptanceJanitorialCasteless:46  
-happy? (if no, will reroll) y/n: n  
-Your password: GluttingInterrelatednessQuietest:44  
-happy? (if no, will reroll) y/n: n  
-Your password: CressetsAlgorismMeta:55  
-happy? (if no, will reroll) y/n: y  
+    $ python3 Passifier.py  
+    Master password  
+    Site name (case insensitive): facebook
+    number to recalc a password, or enter to calc new one:  
+    Your password: NovelsSunwardsPeacefulness:93  
+    happy? (if no, will reroll) y/n: n  
+    Your password: ScalpingAquiferGimmickry:37  
+    happy? (if no, will reroll) y/n: n  
+    Your password: CamembertSplashersColonials:71  
+    happy? (if no, will reroll) y/n: n  
+    Your password: PerusalGrimyGenteelest:96  
+    happy? (if no, will reroll) y/n: n  
+    Your password: UnfeltDestructivenessAnodizing:50  
+    happy? (if no, will reroll) y/n: n  
+    Your password: HelicoptsCrapedReiterated:5  
+    happy? (if no, will reroll) y/n: n  
+    Your password: AdulterousTrottingVotable:66  
+    happy? (if no, will reroll) y/n: n  
+    Your password: PreacceptanceJanitorialCasteless:46  
+    happy? (if no, will reroll) y/n: n  
+    Your password: GluttingInterrelatednessQuietest:44  
+    happy? (if no, will reroll) y/n: n  
+    Your password: CressetsAlgorismMeta:55  
+    happy? (if no, will reroll) y/n: y  
 
 
 # What's a deterministic password generator?
