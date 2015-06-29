@@ -1,6 +1,33 @@
 # pass-ifier
 Python tool for generating strong, yet still humanly memorable, passwords that can be deterministically regenerated at any time.
 
+# Example:  
+$ python3 Passifier.py  
+Master password:  
+Site name (case insensitive): facebook  
+number to recalc a password, or enter to calc new one:  
+Your password: NovelsSunwardsPeacefulness:93  
+happy? (if no, will reroll) y/n: n  
+Your password: ScalpingAquiferGimmickry:37  
+happy? (if no, will reroll) y/n: n  
+Your password: CamembertSplashersColonials:71  
+happy? (if no, will reroll) y/n: n  
+Your password: PerusalGrimyGenteelest:96  
+happy? (if no, will reroll) y/n: n  
+Your password: UnfeltDestructivenessAnodizing:50  
+happy? (if no, will reroll) y/n: n  
+Your password: HelicoptsCrapedReiterated:5  
+happy? (if no, will reroll) y/n: n  
+Your password: AdulterousTrottingVotable:66  
+happy? (if no, will reroll) y/n: n  
+Your password: PreacceptanceJanitorialCasteless:46  
+happy? (if no, will reroll) y/n: n  
+Your password: GluttingInterrelatednessQuietest:44  
+happy? (if no, will reroll) y/n: n  
+Your password: CressetsAlgorismMeta:55  
+happy? (if no, will reroll) y/n: y  
+
+
 # What's a deterministic password generator?
 Feel free to skip to the next section if you already know this.  
 A deterministic password generator is one that doesn't *store* your passwords anywhere. 
@@ -34,6 +61,8 @@ to remember too much.  So far, most websites I use accept this format, as it has
 # Things to implement/fix
 * Consider allowing the user the ability to increase/decrease the entropy of the output, by allowing more words or characters
 * Switch from SHA256 to scrypt or bcrypt.
+* Perhaps switch to a dictionary of more common words, and increase word count to 4, a la XKCD?
+* Make the prompt and printed statements less ugly.
 
 # Disclamer
 Don't take medical advice from anyone besides your doctor, legal advice from anyone besides your lawyer, or cryptographic advice from anyone besides your cryptographer.
