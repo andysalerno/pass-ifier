@@ -3,7 +3,7 @@ Python tool for generating strong, yet still humanly memorable, passwords that c
 
 # Example:  
     $ python3 Passifier.py  
-    Master password  
+    Enter master password:  
     Site name (case insensitive): facebook
     number to recalc a password, or enter to calc new one:  
     Your password: NovelsSunwardsPeacefulness:93  
