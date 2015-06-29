@@ -26,6 +26,15 @@ Python tool for generating strong, yet still humanly memorable, passwords that c
     happy? (if no, will reroll) y/n: n  
     Your password: CressetsAlgorismMeta:55  
     happy? (if no, will reroll) y/n: y  
+    
+Recomputing a password you forgot:
+
+    $ python3 Passifier.py
+    Enter master password:
+    Site name (case insensitive): facebook
+    number to recalc a password, or enter to calc new one: 55
+    Your password: CressetsAlgorismMeta:55
+
 
 
 # What's a deterministic password generator?
