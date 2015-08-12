@@ -14,6 +14,13 @@ def gen_password(numbers_taken, factors=None):
         number = None
     else:
         master_password = getpass('Master password: ')
+        master_password_confirm = getpass('Conform master password: ')
+
+        while master_password != master_password_confirm:
+            print('Confirmation did not match. Try again.')
+            master_password = getpass('Master password: ')
+            master_password_confirm = getpass('Confirm master password: ')
+
         site_name = input('Site name (case insensitive): ').lower()
 
         number = input('number to recalc a password, or enter to calc new one: ')
