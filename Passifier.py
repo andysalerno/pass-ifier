@@ -1,3 +1,5 @@
+#!/usr/local/bin/python3
+
 from getpass import getpass
 from hashlib import sha256
 from random import SystemRandom
@@ -7,31 +9,8 @@ DELIM = ':'
 DICT_FILE = 'dictionary'
 
 
-def gen_password(numbers_taken, factors=None):
-    if factors:
-        master_password = factors['master']
-        site_name = factors['site']
-        number = None
-    else:
-        master_password = getpass('Master password: ')
-        master_password_confirm = getpass('Conform master password: ')
-
-        while master_password != master_password_confirm:
-            print('Confirmation did not match. Try again.')
-            master_password = getpass('Master password: ')
-            master_password_confirm = getpass('Confirm master password: ')
-
-        site_name = input('Site name (case insensitive): ').lower()
-
-        number = input('number to recalc a password, or enter to calc new one: ')
-
-    number = int(number) if number else roll_new_number(numbers_taken)
-    numbers_taken.add(number)
-
-    the_hash = gen_hash(master_password, site_name, number)
-    password = hash_to_pass(the_hash) + ':' + str(number)
-
-    return password, {'master': master_password, 'site': site_name, 'number': number}
+def gen_password(numbers_available, factors=None):
+    pass
 
 
 def gen_hash(master_password, site_name, number):
@@ -58,24 +37,32 @@ def hash_to_pass(the_hash):
     return result
 
 
-def roll_new_number(numbers_taken):
+def roll_new_number(numbers_available):
     crypto_generator = SystemRandom()
-    roll = crypto_generator.randrange(RAND_RANGE)
-    while roll in numbers_taken:
-        roll = crypto_generator.randrange(RAND_RANGE)
-    return roll
+    number = crypto_generator.choice(list(numbers_available))
+    numbers_available.remove(number)
+    return number
+
+
+def main():
+    master = None
+    while True:
+        master = getpass('Master password: ')
+        confirm = getpass('Confirm: ')
+
+        if master == confirm:
+            break
+        else:
+            print('Try again.')
+
+    website = getpass('Website: ')  # todo: have arg to make sitename getpass or not getpass
+
+    number = getpass('Number (leave empty to generate): ')
+    assert len(number) == 0 or number.isdigit(), 'Number must be empty or a digit.'
+
+    hash = gen_hash(master, website, 9)
+
 
 
 if __name__ == '__main__':
-    numbers_taken = set()
-    password, factors = gen_password(numbers_taken)
-
-    print('Your password: ' + password)
-    all_done = input('happy? (if no, will reroll) y/n: ')
-    while all_done != 'y':
-        password, factors = gen_password(numbers_taken, factors=factors)
-        print('Your password: ' + password)
-        if len(numbers_taken) == RAND_RANGE:
-            print('used up all ' + str(RAND_RANGE) + ' passwords.')
-            quit()
-        all_done = input('happy? (if no, will reroll) y/n: ')
+    main()
