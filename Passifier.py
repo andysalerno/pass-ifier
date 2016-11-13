@@ -1,139 +1,81 @@
-#!/usr/local/bin/python3
-
-import argparse
+#!/usr/bin/env python3
 from getpass import getpass
-from hashlib import sha256
+from hashlib import pbkdf2_hmac, sha256
 from random import SystemRandom
 
-RAND_RANGE = 100  # Range of numbers to randomly select an ID
-DELIM = ':'  # The deliminator used in hashing and output.  Change if password requirements demand some exotic char.
-DICT_FILE = 'dictionary'  # Location of the file containing newline-delimited words making up the dictionary.
-
-numbers_available = set(range(RAND_RANGE))
-
-
-def gen_password(hash, number):
-    return hash_to_pass(hash) + DELIM + str(number)
+DICT_FILE = 'dictionary'  # relative path to the dictionary file
+MAX_NUM = 99  # maximum value for number element
+ITERATIONS = 100000  # amount of pbkdf2_hmac iterations to perform
+WORDS = 4  # amount of words to pick from dictionary
 
 
-def gen_hash(master_password, site_name, number):
-    combined = master_password + DELIM + site_name + DELIM + str(number)
-    return sha256(combined.encode('utf-8')).hexdigest()
+def key_to_password(key, dictionary, number):
+    password = ''
+    for _ in range(WORDS):
+        sha = sha256()
+        sha.update(key)
+        key = sha.digest()
+        index = int.from_bytes(key, 'big') % len(dictionary)
+        password += str(dictionary[index], 'utf-8').strip().capitalize()
+
+    password += '!{}'.format(number)
+
+    return password
 
 
-def hash_to_pass(hash):
-    dictionary = open(DICT_FILE, 'r')
-    word_list = dictionary.readlines()
-    dict_len = len(word_list)
-
-    chunk_size = int(len(hash) / 3)
-    assert chunk_size >= 3, "hash not large enough."
-
-    first_chunk = hash[0:chunk_size]
-    second_chunk = hash[chunk_size:chunk_size * 2]
-    third_chunk = hash[chunk_size * 2:chunk_size * 3]
-
-    first_index = int(first_chunk, 16) % dict_len
-    second_index = int(second_chunk, 16) % dict_len
-    third_index = int(third_chunk, 16) % dict_len
-
-    result = word_list[first_index].rstrip().capitalize() + word_list[second_index].rstrip().capitalize() + word_list[
-        third_index].rstrip().capitalize()
-    dictionary.close()
-    return result
+def gen_dictionary_identifier(dictionary):
+    sha = sha256()
+    for word_bytes in dictionary:
+        sha.update(word_bytes)
+    index = int.from_bytes(sha.digest(), 'big') % len(dictionary)
+    return str(dictionary[index].strip(), 'utf-8')
 
 
-def roll_new_number():
-    global numbers_available
-    crypto_generator = SystemRandom()
-    number = crypto_generator.choice(list(numbers_available))
-    numbers_available.remove(number)
-    return number
-
-
-def print_password(password):
-    print("\nYour password is:")
-    print("=================")
-    print(password)
-    print("=================")
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description='Deterministically generate passwords.')
-    parser.add_argument('website', nargs='?')
-    parser.add_argument('number', nargs='?', type=int)
-    args = parser.parse_args()
-
-    if bool(args.number) != bool(args.website):  # if one var is set but not the other
-        parser.print_usage()
-        print("I need both the website and the number to recompute a password.")
+def open_dictionary():
+    try:
+        dictionary = open(DICT_FILE, 'rb')
+        return dictionary.readlines()
+    except:
+        print('Error opening dictionary file {}'.format(DICT_FILE))
         quit()
 
-    return args.website, args.number
 
+def prompt_user():
+    while True:
+        master_pw = getpass('Master password: ')
+        confirm_pw = getpass('Confirm password: ')
 
-def ask_for_details():
-    master = ask_for_master()
+        if master_pw != confirm_pw:
+            print('Confirmation didn\'t match.  Try again.')
+        else:
+            break
 
-    website = input('Website: ')
-
-    number = input('Number (leave empty to generate): ')
-    assert number == '' or number.isdigit(), 'Number must be empty or a digit.'
+    service = input('Service name (e.g. facebook): ').lower()
+    number = input('number (leave blank to generate): ')
 
     if number == '':
-        number = roll_new_number()
+        number = SystemRandom().choice(range(MAX_NUM + 1))
+    else:
+        assert number.isdigit(), "Must enter a valid digit.  You entered: {}".format(number)
+        number = int(number)
+        assert 0 <= number <= MAX_NUM, "Number must be >= 0 and <= {}.  You entered: {}".format(
+            str(MAX_NUM), str(number))
 
-    return master, website, number
-
-
-def ask_for_master():
-    master = None
-
-    while True:
-        master = getpass('Master password: ')
-        confirm = getpass('Confirm: ')
-
-        if master == confirm:
-            break
-        else:
-            print("Confirmation didn't match.  Try again.")
-
-    return master
+    return master_pw, service, number
 
 
 def main():
-    args = parse_args()
+    dictionary = open_dictionary()
 
-    master, website, number = None, None, None
+    print('Dictionary size: {} words'.format(len(dictionary)))
+    print('Dictionary Identifier: {}'.format(
+        gen_dictionary_identifier(dictionary)))
 
-    if all(args):  # if the user included details in args
-        website, number = args[0], args[1]
-        master = ask_for_master()
-
-        hash = gen_hash(master, website, number)
-        password = gen_password(hash, number)
-        print_password(password)
-        print()
-        return  # nothing left to do
-
-    else:  # otherwise we must ask for those details
-        master, website, number = ask_for_details()
-
-    while True:
-        hash = gen_hash(master, website, number)
-        password = gen_password(hash, number)
-        print_password(password)
-        redo = input('Reroll? y/n: ')
-
-        if redo.lower() == 'n':
-            break
-
-        if len(numbers_available) == 0:
-            print('Exhausted number range.')
-            break
-
-        number = roll_new_number()
-
+    master_pw, service, number = prompt_user()
+    combined = master_pw + str(number)
+    key = pbkdf2_hmac('sha256', combined.encode(),
+                      service.encode(), ITERATIONS)
+    print(key_to_password(key, dictionary, number))
 
 if __name__ == '__main__':
     main()
